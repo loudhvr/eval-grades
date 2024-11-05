@@ -1,0 +1,22 @@
+---
+title: "DHIVER"
+author: "Lou Dhiver"
+format: html
+editor: visual
+---
+```{r}
+library(here)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+```
+## Introduction 
+###Question 1 : Load the data set.
+```{r}
+library(readr)
+grades <- read_delim(here("data", "grades.csv"), delim = ",")
+```
+## Simple analyses 
+### Question 2 : Give the number of grades in the data set directly in the text of your quarto file, in a sentence of the form “The data set contains xxx grades.” where xxx is replaced by the number of grades. This must be computed from the data set.
+
+
