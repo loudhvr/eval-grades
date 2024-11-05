@@ -157,6 +157,32 @@ ggplot(grades_distribution, aes(x = factor(number_of_grades), y = number_of_stud
 
 ```
 ### Question 11 
+```{r}
+### Calculate the number of grades per student in Art and Expression
+grades_art_expression <- grades |> 
+  filter(course == "Art and Expression in a Post-Apocalyptic World") |>  
+  group_by(id, group) |>  
+  summarise(number_of_grades = n(), .groups = 'drop')
+
+### Calculate the average number of grades per group
+average_grades_group <- grades_art_expression |> 
+  group_by(group) |> 
+  summarise(average_number_of_grades = mean(number_of_grades), .groups = 'drop')
+
+### Convert group to a factor for better plotting
+average_grades_group$group <- as.factor(average_grades_group$group)
+
+### Graphical representation
+ggplot(average_grades_group, aes(x = group, y = average_number_of_grades)) +
+  geom_point(size = 3, color = "forestgreen") +  
+  labs(title = "Average Number of Grades in Art and Expression by Group",
+       x = "Group",
+       y = "Average Number of Grades") +
+  theme_minimal()
+```
+Two groups (7 and 15) seem to have more grades in average than the others in the Art and Expression in a Post-Apocalyptic World, and that might be because of their group. 
+
+### Question 12 
 
 
 
