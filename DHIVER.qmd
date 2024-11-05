@@ -40,3 +40,27 @@ print(glue("The number of student contained in the data set is {number_students$
 ```
 ### Question 4 
 
+```{r}
+students <- grades |>
+  select(id,group) |>
+  distinct() |>
+  slice_tail(n=5)
+```
+
+```{r}
+  print(knitr::kable(head(students)))
+```
+### Question 5 
+```{r}
+students_per_group <- students |> 
+  group_by(group) |> 
+  summarise(number_of_students = n(), .groups = 'drop')
+ggplot(students_per_group, aes(x = group, y = number_of_students)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Number of Students per Group", 
+       x = "Group", 
+       y = "Number of Students") + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
