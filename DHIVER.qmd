@@ -4,19 +4,39 @@ author: "Lou Dhiver"
 format: html
 editor: visual
 ---
+
 ```{r}
 library(here)
 library(tidyr)
 library(dplyr)
 library(ggplot2)
+library(glue)
 ```
-## Introduction 
+
+## Introduction
+
 ###Question 1 : Load the data set.
+
 ```{r}
 library(readr)
 grades <- read_delim(here("data", "grades.csv"), delim = ",")
 ```
-## Simple analyses 
-### Question 2 : Give the number of grades in the data set directly in the text of your quarto file, in a sentence of the form “The data set contains xxx grades.” where xxx is replaced by the number of grades. This must be computed from the data set.
 
+## Simple analyses
+
+### Question 2 
+```{r}
+total_grades <- grades |>  
+  select(grade) |> 
+  summarise(total = n())
+print(glue("The data set contains {total_grades$total} grades."))
+```
+### Question 3 
+```{r}
+number_students <- grades  |>   
+  distinct(id)  |>  
+  summarise(total=n())
+print(glue("The number of student contained in the data set is {number_students$total}."))
+```
+### Question 4 
 
