@@ -182,7 +182,44 @@ ggplot(average_grades_group, aes(x = group, y = average_number_of_grades)) +
 ```
 Two groups (7 and 15) seem to have more grades in average than the others in the Art and Expression in a Post-Apocalyptic World, and that might be because of their group. 
 
+## 4 Grade Analysis 
 ### Question 12 
+```{r}
+### Calculate average grades per student and course
+average_grades <- grades |> 
+  group_by(id, group, course) |> 
+  summarise(average_grade_all = mean(grade, na.rm = TRUE), .groups = 'drop') 
+
+### Pivot to have the good columns asked 
+average_grades_wide <- average_grades |> 
+  pivot_wider(names_from = course, values_from = average_grade_all) 
+
+### Print extract like in the exercise 
+extract_average_grades <- average_grades_wide |> 
+  select(id, group, `Art and Expression in a Post-Apocalyptic World`, `Combat Tactics and Self-Defense`) |> 
+  slice_head(n = 5) |>  # Get the first 5 rows for the extract
+  knitr::kable(caption = "Extract of Average Grades per Student and Course")
+print(extract_average_grades)
+```
+
+### Question 13 
+```{r}
+ggplot(average_grades_wide, aes(x = `Survival Skills and Wilderness Medicine`, y = `Combat Tactics and Self-Defense`)) +
+  geom_point(alpha = 0.4) + # Points for each student with transparency
+  geom_smooth(method = "lm", color = "blue", se = FALSE) + # Linear trend line without confidence interval
+  labs(
+    title = "Average Grades Comparison",
+    x = "Survival Skills and Wilderness Medicine",
+    y = "Combat Tactics and Self-Defense"
+  ) +
+  theme_minimal()
+```
+This graphic shows that the better the grades you have in `Survival Skills and Wilderness Medicine`, the better grades you will have in `Combat Tactics and Self-Defense`. 
+
+### Question 14 
+```{r}
+
+```
 
 
 
