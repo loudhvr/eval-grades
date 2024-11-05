@@ -59,11 +59,39 @@ print(students_per_group)
 
 ## creating the graphical representation 
 ggplot(students_per_group, aes(x=group, y=number_of_students)) + 
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity")+ 
+  labs(title = "Number of students per group",
+       x = "Group",
+       y = "Number of students")
 ```
 
 ## Question 6 
 ```{r}
-
+## Calculate the average grades 
+average_grades_PAHA <- grades |> 
+  filter (course == "Post-Apocalyptic History and Archaeology") |>
+  group_by(group) |> 
+  summarise(average_grade = mean(grade, na.rm = TRUE))
+print (average_grades_PAHA)
 ```
+```{r}
+## graphical representation 
+ggplot(average_grades_PAHA, aes(x = group, y = average_grade)) + 
+  geom_col() + 
+  labs(title = "Average Grades in Post-Apocalyptic History and Archaeology by Group",
+       x = "Group",
+       y = "Average Grade")
+```
+## Question 7 
+```{r}
+ggplot(grades, aes(x = grade, fill = factor(semester))) + 
+  geom_density(alpha = 0.3) +
+  labs(title = "Distribution of Grades by Semester",
+       x = "Grades",
+       y = "Density",
+       fill = "Semester") +
+  theme_minimal()  
+```
+The repartition of grades is much larger during the second semester (6 to 15), whereas during the 1 it is much more concentrated around the same values (6 to 13). 
 
+## 3 Attendance analysis 
