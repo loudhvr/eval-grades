@@ -11,6 +11,7 @@ library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(glue)
+library(knitr)
 ```
 
 ## Introduction
@@ -95,3 +96,82 @@ ggplot(grades, aes(x = grade, fill = factor(semester))) +
 The repartition of grades is much larger during the second semester (6 to 15), whereas during the 1 it is much more concentrated around the same values (6 to 13). 
 
 ## 3 Attendance analysis 
+### Question 8 
+```{r}
+## calculate number of grades per students 
+grades_per_student <- grades |> 
+  group_by(id, group) |> 
+  summarise(number_of_grades = n(), .groups = 'drop')
+```
+
+```{r}
+## an extract 
+grades_per_student_extract <- grades_per_student |>
+  slice_tail(n = 5) |> 
+  knitr::kable(caption = "Extract of grades per student data frame")
+print(grades_per_student_extract)
+```
+```{r}
+## creation of the markdown table 
+summary_stats <- grades_per_student |> 
+  summarise(
+    min = min(number_of_grades),
+    max = max(number_of_grades),
+    average = mean(number_of_grades),
+    median = median(number_of_grades)
+  )
+
+print(knitr::kable(summary_stats, format = "markdown", caption = "Summary Statistics of Grades per Student"))
+```
+
+### Question 9 
+```{r}
+## Filtering for the specific course asked and counting the number of grades 
+grades_art_expression <- grades |>
+  filter(course == "Art and Expression in a Post-Apocalyptic World") |>  
+  group_by(id, group) |>  
+  summarise(number_of_grades = n(), .groups = 'drop')  
+
+## Extract of this data set 
+grades_art_expression_extract <- grades_art_expression |>
+  slice_tail(n = 5) |>
+  knitr::kable(caption = "Extract of grades in Art and Expression in a Post-Apocalyptic World")
+print(grades_art_expression_extract)
+```
+
+### Question 10 
+```{r}
+## regrouping students by same number of grades for Art and Expression in a Post-Apocalyptic World 
+grades_distribution <- grades_art_expression |>
+  group_by(number_of_grades) |>  
+  summarise(number_of_students = n(), .groups = 'drop')
+print(grades_distribution)
+
+##Graphical representation 
+ggplot(grades_distribution, aes(x = factor(number_of_grades), y = number_of_students)) +
+  geom_col(fill = "forestgreen") +  # Use geom_col for bar plot
+  labs(title = "Distribution of the Number of Grades in Art and Expression",
+       x = "Number of Grades",
+       y = "Number of Students") +
+  theme_minimal()
+
+```
+### Question 11 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
