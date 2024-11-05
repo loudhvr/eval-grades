@@ -218,9 +218,94 @@ This graphic shows that the better the grades you have in `Survival Skills and W
 
 ### Question 14 
 ```{r}
+# Calculate the correlation by group
+correlation_by_group <- average_grades_wide |>  
+  group_by(group) |>  
+  summarise(correlation = cor(`Art and Expression in a Post-Apocalyptic World`, 
+                               `Community Building and Social Organization`, 
+                               use = "complete.obs")) 
+print(correlation_by_group)
+```
+### Question 15 
+```{r}
+# Identify the group with the least negative correlation
+lowest_correlation_group <- correlation_by_group |>   
+  filter(correlation == min(correlation, na.rm = TRUE)) |> 
+  pull(group)
+
+print(lowest_correlation_group)
+
+# Check if we have a valid group
+if (length(lowest_correlation_group) > 0) { 
+  filtered_grades <- average_grades_wide |>   
+    filter(group == lowest_correlation_group)  
+
+  # Create the graphical representation  
+  ggplot(filtered_grades, aes(x = `Community Building and Social Organization`,  
+                               y = `Art and Expression in a Post-Apocalyptic World`)) +  
+    geom_point(alpha = 0.5) +  
+    geom_smooth(method = "lm", se = FALSE, color = "blue") +  # Add a linear trend line
+    labs(title = paste("Average Grades in Art and Expression vs. Community Building for Group", lowest_correlation_group), 
+         x = "Average Grades in Community Building and Social Organization", 
+         y = "Average Grades in Art and Expression in a Post-Apocalyptic World") + 
+    theme_minimal() 
+} else { 
+  print("No valid group with correlation found.") 
+}
+
+
+```
+The group with the highest negative correlation (the most far from 0) is group 9, we can see a weak correlation between the average grades in the two classes for this group. 
+
+### Question 16 
+```{r}
+##Calculating the final grades by the given definition
+final_grades <- average_grades |>  
+  group_by(id, group) |>  
+  summarise(final_grade = mean(average_grade_all, na.rm = TRUE), .groups = 'drop') 
+
+##Arrange in descreasing order 
+final_grades_sorted <- final_grades |> 
+  arrange(desc(final_grade))
+
+## Print the extract asked 
+final_grades_extract <- final_grades_sorted |> 
+  slice_head(n = 5) |> 
+  knitr::kable(caption = "Extract of Final Grades per Student")
+
+print(final_grades_extract)
+```
+
+### Question 17 
+```{r}
+# Calculate average final grade and other statistics by group
+summary_stats <- final_grades |> 
+  group_by(group) |> 
+  summarise(
+    average_final_grade = mean(final_grade, na.rm = TRUE),
+    min_final_grade = min(final_grade, na.rm = TRUE),
+    max_final_grade = max(final_grade, na.rm = TRUE),
+    median_final_grade = median(final_grade, na.rm = TRUE),
+    .groups = 'drop'
+  )
+
+print(knitr::kable(summary_stats, caption = "Summary Statistics of Final Grades by Group"))
 
 ```
 
+We can represent those statistics in a graphical representation. 
+```{r}
+ggplot(final_grades, aes(x = factor(group), y = final_grade)) + 
+  geom_boxplot(fill = "forestgreen", alpha = 0.5) +
+  labs(title = "Final Grades Distribution by Group",
+       x = "Group",
+       y = "Final Grade") +
+  theme_minimal()
+```
+### Question 18 
+```{r}
+
+```
 
 
 

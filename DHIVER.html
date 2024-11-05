@@ -492,6 +492,163 @@ Table: Extract of Average Grades per Student and Course
 </section>
 <section id="question-14" class="level3">
 <h3 class="anchored" data-anchor-id="question-14">Question 14</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the correlation by group</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>correlation_by_group <span class="ot">&lt;-</span> average_grades_wide <span class="sc">|&gt;</span>  </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group) <span class="sc">|&gt;</span>  </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">correlation =</span> <span class="fu">cor</span>(<span class="st">`</span><span class="at">Art and Expression in a Post-Apocalyptic World</span><span class="st">`</span>, </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                               <span class="st">`</span><span class="at">Community Building and Social Organization</span><span class="st">`</span>, </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>                               <span class="at">use =</span> <span class="st">"complete.obs"</span>)) </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(correlation_by_group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 2
+   group correlation
+   &lt;dbl&gt;       &lt;dbl&gt;
+ 1     1     -0.0441
+ 2     2     -0.250 
+ 3     3     -0.494 
+ 4     4     -0.357 
+ 5     5     -0.436 
+ 6     6     -0.250 
+ 7     7     -0.247 
+ 8     8     -0.0511
+ 9     9     -0.567 
+10    10     -0.0709
+11    11     -0.325 
+12    12     -0.193 
+13    13     -0.523 
+14    14     -0.296 
+15    15     -0.300 
+16    16     -0.452 </code></pre>
+</div>
+</div>
+</section>
+<section id="question-15" class="level3">
+<h3 class="anchored" data-anchor-id="question-15">Question 15</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify the group with the least negative correlation</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>lowest_correlation_group <span class="ot">&lt;-</span> correlation_by_group <span class="sc">|&gt;</span>   </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(correlation <span class="sc">==</span> <span class="fu">min</span>(correlation, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(group)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(lowest_correlation_group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if we have a valid group</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(lowest_correlation_group) <span class="sc">&gt;</span> <span class="dv">0</span>) { </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  filtered_grades <span class="ot">&lt;-</span> average_grades_wide <span class="sc">|&gt;</span>   </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(group <span class="sc">==</span> lowest_correlation_group)  </span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create the graphical representation  </span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(filtered_grades, <span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">Community Building and Social Organization</span><span class="st">`</span>,  </span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                               <span class="at">y =</span> <span class="st">`</span><span class="at">Art and Expression in a Post-Apocalyptic World</span><span class="st">`</span>)) <span class="sc">+</span>  </span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span>  </span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span>  <span class="co"># Add a linear trend line</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">paste</span>(<span class="st">"Average Grades in Art and Expression vs. Community Building for Group"</span>, lowest_correlation_group), </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> <span class="st">"Average Grades in Community Building and Social Organization"</span>, </span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">"Average Grades in Art and Expression in a Post-Apocalyptic World"</span>) <span class="sc">+</span> </span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() </span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> { </span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"No valid group with correlation found."</span>) </span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="DHIVER_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The group with the highest negative correlation (the most far from 0) is group 9, we can see a weak correlation between the average grades in the two classes for this group.</p>
+</section>
+<section id="question-16" class="level3">
+<h3 class="anchored" data-anchor-id="question-16">Question 16</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="do">##Calculating the final grades by the given definition</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>final_grades <span class="ot">&lt;-</span> average_grades <span class="sc">|&gt;</span>  </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, group) <span class="sc">|&gt;</span>  </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">final_grade =</span> <span class="fu">mean</span>(average_grade_all, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">'drop'</span>) </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="do">##Arrange in descreasing order </span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>final_grades_sorted <span class="ot">&lt;-</span> final_grades <span class="sc">|&gt;</span> </span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(final_grade))</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Print the extract asked </span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>final_grades_extract <span class="ot">&lt;-</span> final_grades_sorted <span class="sc">|&gt;</span> </span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Extract of Final Grades per Student"</span>)</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(final_grades_extract)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+Table: Extract of Final Grades per Student
+
+|  id| group| final_grade|
+|---:|-----:|-----------:|
+| 794|    13|    11.66575|
+| 542|     5|    11.65286|
+| 401|    11|    11.47861|
+| 908|    11|    11.47649|
+| 555|     5|    11.46861|</code></pre>
+</div>
+</div>
+</section>
+<section id="question-17" class="level3">
+<h3 class="anchored" data-anchor-id="question-17">Question 17</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average final grade and other statistics by group</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> final_grades <span class="sc">|&gt;</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group) <span class="sc">|&gt;</span> </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">average_final_grade =</span> <span class="fu">mean</span>(final_grade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_final_grade =</span> <span class="fu">min</span>(final_grade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_final_grade =</span> <span class="fu">max</span>(final_grade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_final_grade =</span> <span class="fu">median</span>(final_grade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(knitr<span class="sc">::</span><span class="fu">kable</span>(summary_stats, <span class="at">caption =</span> <span class="st">"Summary Statistics of Final Grades by Group"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+
+Table: Summary Statistics of Final Grades by Group
+
+| group| average_final_grade| min_final_grade| max_final_grade| median_final_grade|
+|-----:|-------------------:|---------------:|---------------:|------------------:|
+|     1|           10.518883|        9.684246|       11.173690|          10.629444|
+|     2|            9.862685|        8.970198|       10.785238|           9.853095|
+|     3|           10.360435|        9.592540|       11.213651|          10.389087|
+|     4|            9.256189|        8.404603|        9.964048|           9.306667|
+|     5|           10.789901|        9.785778|       11.652857|          10.810794|
+|     6|           10.479284|        9.582460|       11.347321|          10.482897|
+|     7|           10.212570|        9.297143|       11.061468|          10.175873|
+|     8|            9.739540|        8.415714|       10.525059|           9.724147|
+|     9|           10.205832|        9.581944|       10.952857|          10.163929|
+|    10|           10.557559|        9.842698|       11.306032|          10.558442|
+|    11|           10.624107|        9.469583|       11.478611|          10.616300|
+|    12|           10.439475|        9.542341|       11.360119|          10.494603|
+|    13|           10.560880|        9.779405|       11.665754|          10.490357|
+|    14|            9.942175|        9.228651|       10.665833|           9.956339|
+|    15|            9.715516|        9.024087|       11.036429|           9.668373|
+|    16|           10.200272|        9.308750|       11.072778|          10.209206|</code></pre>
+</div>
+</div>
+<p>We can represent those statistics in a graphical representation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(final_grades, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(group), <span class="at">y =</span> final_grade)) <span class="sc">+</span> </span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Final Grades Distribution by Group"</span>,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Group"</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Final Grade"</span>) <span class="sc">+</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DHIVER_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="question-18" class="level3">
+<h3 class="anchored" data-anchor-id="question-18">Question 18</h3>
 </section>
 </section>
 
