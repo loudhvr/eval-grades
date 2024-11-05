@@ -128,7 +128,8 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>###Question 1 : Load the data set.</p>
+<section id="question-1-load-the-data-set." class="level3">
+<h3 class="anchored" data-anchor-id="question-1-load-the-data-set.">Question 1 : Load the data set.</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>grades <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"grades.csv"</span>), <span class="at">delim =</span> <span class="st">","</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -143,6 +144,7 @@ dbl (4): group, id, semester, grade
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
+</section>
 </section>
 <section id="simple-analyses" class="level2">
 <h2 class="anchored" data-anchor-id="simple-analyses">Simple analyses</h2>
@@ -406,21 +408,21 @@ Table: Extract of grades in Art and Expression in a Post-Apocalyptic World
 <section id="question-11" class="level3">
 <h3 class="anchored" data-anchor-id="question-11">Question 11</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Calculate the number of grades per student in Art and Expression</span></span>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the number of grades per student in Art and Expression</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>grades_art_expression <span class="ot">&lt;-</span> grades <span class="sc">|&gt;</span> </span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(course <span class="sc">==</span> <span class="st">"Art and Expression in a Post-Apocalyptic World"</span>) <span class="sc">|&gt;</span>  </span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, group) <span class="sc">|&gt;</span>  </span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_grades =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">'drop'</span>)</span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="do">### Calculate the average number of grades per group</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate the average number of grades per group</span></span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>average_grades_group <span class="ot">&lt;-</span> grades_art_expression <span class="sc">|&gt;</span> </span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group) <span class="sc">|&gt;</span> </span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">average_number_of_grades =</span> <span class="fu">mean</span>(number_of_grades), <span class="at">.groups =</span> <span class="st">'drop'</span>)</span>
 <span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="do">### Convert group to a factor for better plotting</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="do">## Convert group to a factor for better plotting</span></span>
 <span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>average_grades_group<span class="sc">$</span>group <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(average_grades_group<span class="sc">$</span>group)</span>
 <span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="do">### Graphical representation</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="do">## Graphical representation</span></span>
 <span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(average_grades_group, <span class="fu">aes</span>(<span class="at">x =</span> group, <span class="at">y =</span> average_number_of_grades)) <span class="sc">+</span></span>
 <span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span>  </span>
 <span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average Number of Grades in Art and Expression by Group"</span>,</span>
@@ -439,16 +441,16 @@ Table: Extract of grades in Art and Expression in a Post-Apocalyptic World
 <section id="question-12" class="level3">
 <h3 class="anchored" data-anchor-id="question-12">Question 12</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">### Calculate average grades per student and course</span></span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate average grades per student and course</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>average_grades <span class="ot">&lt;-</span> grades <span class="sc">|&gt;</span> </span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, group, course) <span class="sc">|&gt;</span> </span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">average_grade_all =</span> <span class="fu">mean</span>(grade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">'drop'</span>) </span>
 <span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="do">### Pivot to have the good columns asked </span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Pivot to have the good columns asked </span></span>
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>average_grades_wide <span class="ot">&lt;-</span> average_grades <span class="sc">|&gt;</span> </span>
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> course, <span class="at">values_from =</span> average_grade_all) </span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="do">### Print extract like in the exercise </span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Print extract like in the exercise </span></span>
 <span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>extract_average_grades <span class="ot">&lt;-</span> average_grades_wide <span class="sc">|&gt;</span> </span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, group, <span class="st">`</span><span class="at">Art and Expression in a Post-Apocalyptic World</span><span class="st">`</span>, <span class="st">`</span><span class="at">Combat Tactics and Self-Defense</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">5</span>) <span class="sc">|&gt;</span>  <span class="co"># Get the first 5 rows for the extract</span></span>
@@ -649,6 +651,108 @@ Table: Summary Statistics of Final Grades by Group
 </section>
 <section id="question-18" class="level3">
 <h3 class="anchored" data-anchor-id="question-18">Question 18</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate average grades per student and course with semester included </span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>average_grades <span class="ot">&lt;-</span> grades <span class="sc">|&gt;</span>  </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id, group, course, semester) <span class="sc">|&gt;</span>  </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">average_grade_all =</span> <span class="fu">mean</span>(grade, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">'drop'</span>) </span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Check passing conditions</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>passing_status <span class="ot">&lt;-</span> average_grades <span class="sc">|&gt;</span>  </span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">|&gt;</span>  </span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_per_course =</span> <span class="fu">all</span>(average_grade_all <span class="sc">&gt;=</span> <span class="dv">5</span>),  <span class="co"># No average grade lower than 5</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_semester_1 =</span> <span class="fu">mean</span>(average_grade_all[semester <span class="sc">==</span> <span class="dv">1</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  <span class="co"># Average for semester 1</span></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_semester_2 =</span> <span class="fu">mean</span>(average_grade_all[semester <span class="sc">==</span> <span class="dv">2</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>),  <span class="co"># Average for semester 2</span></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pass =</span> avg_per_course <span class="sc">&amp;</span> (avg_semester_1 <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">&amp;</span> (avg_semester_2 <span class="sc">&gt;=</span> <span class="dv">10</span>),  <span class="co"># Conditions for passing</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine final grades with passing status</span></span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>final_results <span class="ot">&lt;-</span> final_grades <span class="sc">|&gt;</span>  </span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(passing_status <span class="sc">|&gt;</span> <span class="fu">select</span>(id, pass), <span class="at">by =</span> <span class="st">"id"</span>)</span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(final_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 985 × 4
+      id group final_grade pass 
+   &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt; &lt;lgl&gt;
+ 1     1     5       11.0  TRUE 
+ 2     2    14       10.4  FALSE
+ 3     3     1       10.9  TRUE 
+ 4     4     7       10.6  FALSE
+ 5     5    11       10.6  FALSE
+ 6     6     8        9.41 FALSE
+ 7     7     3        9.98 FALSE
+ 8     8     1       10.6  TRUE 
+ 9     9     9        9.99 FALSE
+10    10    12        9.76 FALSE
+# ℹ 975 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="question-19" class="level3">
+<h3 class="anchored" data-anchor-id="question-19">Question 19</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count the number of students who do not pass but have a final grade &gt;= 10</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>students_non_pass_and_high_grade <span class="ot">&lt;-</span> final_results <span class="sc">|&gt;</span> </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>pass <span class="sc">&amp;</span> final_grade <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">number_of_students =</span> <span class="fu">n</span>())    </span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(students_non_pass_and_high_grade)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  number_of_students
+               &lt;int&gt;
+1                457</code></pre>
+</div>
+</div>
+</section>
+<section id="question-20" class="level3">
+<h3 class="anchored" data-anchor-id="question-20">Question 20</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate total students and passing students per group</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>pass_rate_per_group <span class="ot">&lt;-</span> final_results <span class="sc">|&gt;</span> </span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(group) <span class="sc">|&gt;</span> </span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_students =</span> <span class="fu">n</span>(),            </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">passing_students =</span> <span class="fu">sum</span>(pass),           </span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">pass_rate =</span> passing_students <span class="sc">/</span> total_students <span class="sc">*</span> <span class="dv">100</span>,  </span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">'drop'</span>                        </span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pass_rate_per_group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 4
+   group total_students passing_students pass_rate
+   &lt;dbl&gt;          &lt;int&gt;            &lt;int&gt;     &lt;dbl&gt;
+ 1     1             51               19     37.3 
+ 2     2             71                0      0   
+ 3     3             57                6     10.5 
+ 4     4             45                0      0   
+ 5     5             59               36     61.0 
+ 6     6             63               11     17.5 
+ 7     7             54                2      3.70
+ 8     8             70                4      5.71
+ 9     9             71               12     16.9 
+10    10             68               28     41.2 
+11    11             72               29     40.3 
+12    12             45               12     26.7 
+13    13             59               29     49.2 
+14    14             60                0      0   
+15    15             65                5      7.69
+16    16             75               15     20   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar plot to visualize the pass rates</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pass_rate_per_group, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(group), <span class="at">y =</span> pass_rate)) <span class="sc">+</span> </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span>             </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Pass Rate per Group"</span>,        </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Group"</span>,                           </span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pass Rate (%)"</span>) <span class="sc">+</span>                 </span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()<span class="sc">+</span>                         </span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">round</span>(pass_rate, <span class="dv">1</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DHIVER_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Group 2, 4 and 14 are completely failing…</p>
 </section>
 </section>
 

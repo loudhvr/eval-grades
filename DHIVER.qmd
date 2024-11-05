@@ -16,7 +16,7 @@ library(knitr)
 
 ## Introduction
 
-###Question 1 : Load the data set.
+### Question 1 : Load the data set.
 
 ```{r}
 library(readr)
@@ -158,21 +158,21 @@ ggplot(grades_distribution, aes(x = factor(number_of_grades), y = number_of_stud
 ```
 ### Question 11 
 ```{r}
-### Calculate the number of grades per student in Art and Expression
+## Calculate the number of grades per student in Art and Expression
 grades_art_expression <- grades |> 
   filter(course == "Art and Expression in a Post-Apocalyptic World") |>  
   group_by(id, group) |>  
   summarise(number_of_grades = n(), .groups = 'drop')
 
-### Calculate the average number of grades per group
+## Calculate the average number of grades per group
 average_grades_group <- grades_art_expression |> 
   group_by(group) |> 
   summarise(average_number_of_grades = mean(number_of_grades), .groups = 'drop')
 
-### Convert group to a factor for better plotting
+## Convert group to a factor for better plotting
 average_grades_group$group <- as.factor(average_grades_group$group)
 
-### Graphical representation
+## Graphical representation
 ggplot(average_grades_group, aes(x = group, y = average_number_of_grades)) +
   geom_point(size = 3, color = "forestgreen") +  
   labs(title = "Average Number of Grades in Art and Expression by Group",
@@ -185,16 +185,16 @@ Two groups (7 and 15) seem to have more grades in average than the others in the
 ## 4 Grade Analysis 
 ### Question 12 
 ```{r}
-### Calculate average grades per student and course
+## Calculate average grades per student and course
 average_grades <- grades |> 
   group_by(id, group, course) |> 
   summarise(average_grade_all = mean(grade, na.rm = TRUE), .groups = 'drop') 
 
-### Pivot to have the good columns asked 
+## Pivot to have the good columns asked 
 average_grades_wide <- average_grades |> 
   pivot_wider(names_from = course, values_from = average_grade_all) 
 
-### Print extract like in the exercise 
+## Print extract like in the exercise 
 extract_average_grades <- average_grades_wide |> 
   select(id, group, `Art and Expression in a Post-Apocalyptic World`, `Combat Tactics and Self-Defense`) |> 
   slice_head(n = 5) |>  # Get the first 5 rows for the extract
@@ -304,9 +304,60 @@ ggplot(final_grades, aes(x = factor(group), y = final_grade)) +
 ```
 ### Question 18 
 ```{r}
+# Calculate average grades per student and course with semester included 
+average_grades <- grades |>  
+  group_by(id, group, course, semester) |>  
+  summarise(average_grade_all = mean(grade, na.rm = TRUE), .groups = 'drop') 
+
+# Check passing conditions
+passing_status <- average_grades |>  
+  group_by(id) |>  
+  summarise(
+    avg_per_course = all(average_grade_all >= 5),  # No average grade lower than 5
+    avg_semester_1 = mean(average_grade_all[semester == 1], na.rm = TRUE),  # Average for semester 1
+    avg_semester_2 = mean(average_grade_all[semester == 2], na.rm = TRUE),  # Average for semester 2
+    pass = avg_per_course & (avg_semester_1 >= 10) & (avg_semester_2 >= 10),  # Conditions for passing
+    .groups = 'drop'
+  )
+
+# Combine final grades with passing status
+final_results <- final_grades |>  
+  left_join(passing_status |> select(id, pass), by = "id")
+print(final_results)
+```
+### Question 19 
+```{r}
+# Count the number of students who do not pass but have a final grade >= 10
+students_non_pass_and_high_grade <- final_results |> 
+  filter(!pass & final_grade >= 10) |>
+  summarise(number_of_students = n())    
+print(students_non_pass_and_high_grade)
 
 ```
+### Question 20 
+```{r}
+# Calculate total students and passing students per group
+pass_rate_per_group <- final_results |> 
+  group_by(group) |> 
+  summarise(
+    total_students = n(),            
+    passing_students = sum(pass),           
+    pass_rate = passing_students / total_students * 100,  
+    .groups = 'drop'                        
+  )
+print(pass_rate_per_group)
 
+# Create a bar plot to visualize the pass rates
+ggplot(pass_rate_per_group, aes(x = factor(group), y = pass_rate)) + 
+  geom_col(fill = "forestgreen") +             
+  labs(title = "Pass Rate per Group",        
+       x = "Group",                           
+       y = "Pass Rate (%)") +                 
+  theme_minimal()+                         
+  geom_text(aes(label = round(pass_rate, 1)), vjust = -0.5) 
+
+```
+Group 2, 4 and 14 are completely failing... 
 
 
 
